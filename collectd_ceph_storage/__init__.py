@@ -205,7 +205,7 @@ class CollectdCephStorage(object):
             json_data = json.loads(output)
 
             pgs = {}
-            for pg in json_data['pg_stats']:
+            for pg in json_data['pg_map']['pg_stats']:
                 for state in pg['state'].split('+'):
                     if state not in pgs:
                         pgs[state] = 0
@@ -215,7 +215,7 @@ class CollectdCephStorage(object):
                 self.dispatch_value(
                     'pg', state, pgs[state], self.ceph_pg_stats_interval)
 
-            for osd in json_data['osd_stats']:
+            for osd in json_data['pg_map']['osd_stats']:
                 osd_id = 'osd-{}'.format(osd['osd'])
                 self.dispatch_value(
                     osd_id, 'kb_used', osd['kb_used'],
@@ -230,11 +230,11 @@ class CollectdCephStorage(object):
                     self.ceph_pg_stats_interval)
                 self.dispatch_value(
                     osd_id, 'apply_latency_ms',
-                    osd['fs_perf_stat']['apply_latency_ms'],
+                    osd['perf_stat']['apply_latency_ms'],
                     self.ceph_pg_stats_interval)
                 self.dispatch_value(
                     osd_id, 'commit_latency_ms',
-                    osd['fs_perf_stat']['commit_latency_ms'],
+                    osd['perf_stat']['commit_latency_ms'],
                     self.ceph_pg_stats_interval)
 
     def read_ceph_pool(self):
