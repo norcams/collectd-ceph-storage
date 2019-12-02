@@ -262,7 +262,8 @@ class CollectdCephStorage(object):
 
             for pool in json_df_data['pools']:
                 pool_key = 'pool-{}'.format(pool['name'])
-                for stat in ('bytes_used', 'kb_used', 'objects'):
+                for stat in ('bytes_used', 'kb_used', 'objects',
+                             'percent_used', 'max_avail'):
                     value = pool['stats'][stat] if stat in pool['stats'] else 0
                     self.dispatch_value(
                         pool_key, stat, value, self.ceph_pool_stats_interval)
