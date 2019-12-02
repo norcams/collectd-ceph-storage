@@ -297,6 +297,20 @@ class CollectdCephStorage(object):
                     int(json_df_data['stats']['total_avail']) * 1024.0,
                     self.ceph_pool_stats_interval)
 
+            for key in json_df_data['stats_by_class']:
+                self.dispatch_value(
+                    key, 'total_space',
+                    int(json_df_data['stats_by_class'][key]['total_bytes']),
+                    self.ceph_pool_stats_interval)
+                self.dispatch_value(
+                    key, 'total_used',
+                    int(json_df_data['stats_by_class'][key]['total_used_bytes']),
+                    self.ceph_pool_stats_interval)
+                self.dispatch_value(
+                    key, 'total_avail',
+                    int(json_df_data['stats_by_class'][key]['total_avail_bytes']),
+                    self.ceph_pool_stats_interval)
+
     def run_command(self, command, check_output=True):
         """Run a command for this collectd plugin. Returns a tuple with command
         success and output or False and None for output.
